@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">GeekNote</string>
+
+    <string name="name_hint_ru">Название</string>
+    <string name="description_hint_ru">Описание</string>
+    <string name="deadline_hint_ru">Дедлайн</string>
+    <string name="create_hint_ru">Дата создания</string>
+    <string name="save_text">Save</string>
+    <string name="edit_text">Edit</string>
 </resources>
