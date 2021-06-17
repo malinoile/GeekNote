@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.fragment.app.ListFragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -80,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
         if (isLand) {
             transaction.remove(getSupportFragmentManager().findFragmentById(R.id.details_container));
         } else {
-            transaction.replace(R.id.single_fragment_container, new ListFragment());
+            transaction.replace(R.id.single_fragment_container, new NoteListFragment());
         }
         transaction.commit();
     }
