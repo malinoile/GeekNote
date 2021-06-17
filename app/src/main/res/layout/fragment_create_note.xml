@@ -9,11 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/text_name"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_name"
             style="@style/full_width_view"
-            android:textColor="@color/black"
-            android:textSize="@dimen/big_text_size"
             android:hint="@string/name_hint_ru"
             app:layout_constraintBottom_toTopOf="@id/edit_description"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -27,13 +25,13 @@
             app:layout_constraintBottom_toTopOf="@+id/linear_date"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_name" />
+            app:layout_constraintTop_toBottomOf="@+id/edit_name" />
 
         <LinearLayout
             android:id="@+id/linear_date"
             style="@style/full_width_view"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@id/text_date_create"
+            app:layout_constraintBottom_toTopOf="@id/button_save"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/edit_description">
@@ -47,34 +45,23 @@
                 android:paddingHorizontal="@dimen/half_dimen"
                 android:textSize="@dimen/default_text_size" />
 
-            <Space
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_deadline"
+                style="@style/button"
                 android:layout_width="@dimen/null_dimen"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.3" />
+                android:layout_weight="0.3"
+                android:text="@string/edit_text_ru" />
 
         </LinearLayout>
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/text_date_create"
-            style="@style/view_on_parent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="@string/create_hint_ru"
-            android:textAlignment="textEnd"
-            android:textSize="@dimen/small_text_size"
-            app:layout_constraintBottom_toTopOf="@id/button_save"
-            app:layout_constraintHorizontal_bias="1"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/linear_date" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_save"
             style="@style/full_width_button"
-            android:text="@string/save_text_ru"
+            android:text="@string/create_text_ru"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_date_create" />
+            app:layout_constraintTop_toBottomOf="@id/linear_date" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

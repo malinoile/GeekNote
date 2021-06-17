@@ -4,13 +4,18 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.fragment.app.ListFragment;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import ru.malinoil.geeknote.fragments.NoteCreateFragment;
 import ru.malinoil.geeknote.fragments.NoteListFragment;
 import ru.malinoil.geeknote.fragments.NotebookFragment;
 import ru.malinoil.geeknote.models.NoteEntity;
 
 public class MainActivity extends AppCompatActivity implements NoteListFragment.Controller,
-        NotebookFragment.Controller {
+        NotebookFragment.Controller, NoteCreateFragment.Controller {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,8 +28,29 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.single_fragment_container, new NoteListFragment())
+                .replace(R.id.single_fragment_container, new NoteListFragment())
                 .commit();
+
+        if (getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
+
+            BottomNavigationView navigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+            navigationView.setOnNavigationItemSelectedListener(item -> {
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                switch (item.getItemId()) {
+                    case R.id.nav_list:
+                        fragmentTransaction.replace(R.id.single_fragment_container,
+                                new NoteListFragment());
+                        break;
+                    case R.id.nav_add_note:
+                        fragmentTransaction.replace(R.id.single_fragment_container,
+                                new NoteCreateFragment());
+                        break;
+                }
+                fragmentTransaction.commit();
+                return true;
+            });
+
+        }
     }
 
 
@@ -33,13 +59,34 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
         boolean isLand = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         getSupportFragmentManager()
                 .beginTransaction()
-                .add((isLand) ? R.id.details_container : R.id.single_fragment_container, NotebookFragment.newInstance(noteEntity))
+                .replace((isLand) ? R.id.details_container : R.id.single_fragment_container, NotebookFragment.newInstance(noteEntity))
                 .addToBackStack(null)
                 .commit();
     }
 
     @Override
-    public void saveNote(NoteEntity noteEntity) {
-        onBackPressed();
+    public void openCreateNote() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.details_container, new NoteCreateFragment())
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void updateNote(NoteEntity noteEntity) {
+        boolean isLand = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if (isLand) {
+            transaction.remove(getSupportFragmentManager().findFragmentById(R.id.details_container));
+        } else {
+            transaction.replace(R.id.single_fragment_container, new ListFragment());
+        }
+        transaction.commit();
+    }
+
+    @Override
+    public void saveNewNote(NoteEntity note) {
+
     }
 }

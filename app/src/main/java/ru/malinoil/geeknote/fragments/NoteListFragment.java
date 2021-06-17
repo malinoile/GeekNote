@@ -1,6 +1,7 @@
 package ru.malinoil.geeknote.fragments;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import ru.malinoil.geeknote.models.NoteEntity;
 public class NoteListFragment extends Fragment {
 
     private LinearLayout listNotes;
+    private Button createBtn;
 
     @Nullable
     @Override
@@ -31,6 +33,16 @@ public class NoteListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         listNotes = view.findViewById(R.id.list_notes);
+        createBtn = (Button) view.findViewById(R.id.add_note_button);
+        if (getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
+            createBtn.setClickable(false);
+            createBtn.setVisibility(View.GONE);
+        }
+
+        createBtn.setOnClickListener(v -> {
+            ((Controller) getActivity()).openCreateNote();
+        });
+
         addNoteOnViewport(new NoteEntity("Заметка с продуктами", "1. Квас\n2. Молоко\n3. Ирис"));
         addNoteOnViewport(new NoteEntity("Рабочая", "Посмотреть проблемы на 194.53.53.125"));
         addNoteOnViewport(new NoteEntity("Пустой список дел", ""));
@@ -55,5 +67,7 @@ public class NoteListFragment extends Fragment {
 
     public interface Controller {
         void openNotebook(NoteEntity noteEntity);
+
+        void openCreateNote();
     }
 }

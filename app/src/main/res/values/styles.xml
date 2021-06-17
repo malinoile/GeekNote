@@ -18,11 +18,14 @@
     <style name="button">
         <item name="android:textSize">@dimen/button_text_size</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:singleLine">true</item>
+        <item name="backgroundTint">@color/orange</item>
     </style>
 
     <style name="full_width_button" parent="full_width_view">
         <item name="android:layout_margin">@dimen/default_dimen</item>
         <item name="android:textSize">@dimen/button_text_size</item>
         <item name="android:textStyle">bold</item>
+        <item name="backgroundTint">@color/orange</item>
     </style>
 </resources>
