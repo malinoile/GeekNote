@@ -25,11 +25,10 @@ public class NotebookFragment extends Fragment {
     private NoteEntity noteEntity;
     private SimpleDateFormat simpleDateFormat;
 
-    private EditText editName;
+    private TextView editName;
     private EditText editDescription;
     private TextView textDeadline;
     private TextView textCreate;
-    private Button btnDeadline;
     private Button btnSave;
 
     public static NotebookFragment newInstance(NoteEntity noteEntity) {
@@ -58,11 +57,10 @@ public class NotebookFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_note, null);
 
-        editName = (EditText) view.findViewById(R.id.edit_name);
+        editName = (TextView) view.findViewById(R.id.text_name);
         editDescription = (EditText) view.findViewById(R.id.edit_description);
         textCreate = (TextView) view.findViewById(R.id.text_date_create);
         textDeadline = (TextView) view.findViewById(R.id.text_deadline);
-        btnDeadline = (Button) view.findViewById(R.id.button_deadline);
         btnSave = (Button) view.findViewById(R.id.button_save);
 
         return view;
@@ -83,15 +81,10 @@ public class NotebookFragment extends Fragment {
                         : "Дедлайн не указан"
         );
 
-        btnDeadline.setOnClickListener(v -> {
-            noteEntity.setDeadline(new Date());
-            textDeadline.setText(getDeadlineString(noteEntity.getDeadline()));
-        });
-
         btnSave.setOnClickListener(v -> {
             noteEntity.setName(editName.getText().toString());
             noteEntity.setDescription(editDescription.getText().toString());
-            ((Controller) getActivity()).saveNote(noteEntity);
+            ((Controller) getActivity()).updateNote(noteEntity);
         });
 
     }
@@ -101,7 +94,7 @@ public class NotebookFragment extends Fragment {
     }
 
     public interface Controller {
-        void saveNote(NoteEntity noteEntity);
+        void updateNote(NoteEntity noteEntity);
     }
 
 }
