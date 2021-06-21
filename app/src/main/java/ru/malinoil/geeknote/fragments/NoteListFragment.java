@@ -7,67 +7,81 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import ru.malinoil.geeknote.NoteListAdapter;
 import ru.malinoil.geeknote.R;
 import ru.malinoil.geeknote.models.NoteEntity;
 
 
 public class NoteListFragment extends Fragment {
 
-    private LinearLayout listNotes;
+    private List<NoteEntity> listNotes = new ArrayList<>();
+    private RecyclerView recyclerListNotes;
+    private NoteListAdapter listAdapter;
     private Button createBtn;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_list_notes, null);
+        View view = inflater.inflate(R.layout.fragment_list_notes, null);
+        recyclerListNotes = (RecyclerView) view.findViewById(R.id.recycler_list_notes);
+        createBtn = (Button) view.findViewById(R.id.button_add_note);
+
+        return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        listNotes = view.findViewById(R.id.list_notes);
-        createBtn = (Button) view.findViewById(R.id.add_note_button);
+        listAdapter = new NoteListAdapter();
+        listAdapter.setOnItemClickListener(getController()::openNote);
+        recyclerListNotes.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerListNotes.setAdapter(listAdapter);
+        listAdapter.setListNotes(listNotes);
+
         if (getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
             createBtn.setClickable(false);
             createBtn.setVisibility(View.GONE);
         }
-
-        createBtn.setOnClickListener(v -> {
-            ((Controller) getActivity()).openCreateNote();
-        });
-
-        addNoteOnViewport(new NoteEntity("Заметка с продуктами", "1. Квас\n2. Молоко\n3. Ирис"));
-        addNoteOnViewport(new NoteEntity("Рабочая", "Посмотреть проблемы на 194.53.53.125"));
-        addNoteOnViewport(new NoteEntity("Пустой список дел", ""));
+        createBtn.setOnClickListener(v -> ((Controller) getActivity()).createNote());
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (!(context instanceof Controller)) {
-            throw new RuntimeException("Activity должен реализовывать интерфейс NoteListFragment.Controller");
+            throw new RuntimeException("Activity должен реализовывать NoteListFragment.Controller");
         }
     }
 
-    private void addNoteOnViewport(NoteEntity noteEntity) {
-        Button button = new Button(getContext());
-        button.setText(noteEntity.getName());
-        button.setOnClickListener(v -> {
-            ((Controller) getActivity()).openNotebook(noteEntity);
-        });
-        listNotes.addView(button);
+    public void addNoteOnList(NoteEntity note) {
+        for (NoteEntity listNote : listNotes) {
+            if (listNote.getId().equals(note.getId())) {
+                return;
+            }
+        }
+        listNotes.add(note);
+        listAdapter.setListNotes(listNotes);
+        listAdapter.notifyDataSetChanged();
+    }
+
+    private Controller getController() {
+        return (Controller) getActivity();
     }
 
     public interface Controller {
-        void openNotebook(NoteEntity noteEntity);
+        void openNote(NoteEntity noteEntity);
 
-        void openCreateNote();
+        void createNote();
     }
 }

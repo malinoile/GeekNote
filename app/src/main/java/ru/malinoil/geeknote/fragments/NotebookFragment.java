@@ -25,11 +25,12 @@ public class NotebookFragment extends Fragment {
     private NoteEntity noteEntity;
     private SimpleDateFormat simpleDateFormat;
 
-    private TextView editName;
+    private EditText editName;
     private EditText editDescription;
     private TextView textDeadline;
     private TextView textCreate;
     private Button btnSave;
+    private Button btnDeadline;
 
     public static NotebookFragment newInstance(NoteEntity noteEntity) {
         NotebookFragment fragment = new NotebookFragment();
@@ -57,11 +58,17 @@ public class NotebookFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_note, null);
 
-        editName = (TextView) view.findViewById(R.id.text_name);
+        editName = (EditText) view.findViewById(R.id.edit_name);
         editDescription = (EditText) view.findViewById(R.id.edit_description);
         textCreate = (TextView) view.findViewById(R.id.text_date_create);
         textDeadline = (TextView) view.findViewById(R.id.text_deadline);
         btnSave = (Button) view.findViewById(R.id.button_save);
+        if (noteEntity == null) {
+            btnSave.setText(getContext().getString(R.string.create_text));
+        } else {
+            btnSave.setText(getContext().getString(R.string.save_text));
+        }
+        btnDeadline = (Button) view.findViewById(R.id.button_deadline);
 
         return view;
     }
@@ -70,23 +77,37 @@ public class NotebookFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
-
-        editName.setText(noteEntity.getName());
-        editDescription.setText(noteEntity.getDescription());
-        textCreate.setText(String.format("Created: %s",
-                simpleDateFormat.format(noteEntity.getCreateDate())));
-        textDeadline.setText(
-                (noteEntity.getDeadline() != null)
-                        ? getDeadlineString(noteEntity.getDeadline())
-                        : "Дедлайн не указан"
-        );
+        initializeFields(noteEntity);
+        if (noteEntity == null) noteEntity = new NoteEntity("", "");
 
         btnSave.setOnClickListener(v -> {
-            noteEntity.setName(editName.getText().toString());
-            noteEntity.setDescription(editDescription.getText().toString());
-            ((Controller) getActivity()).updateNote(noteEntity);
+            fillNote();
+            getController().updateNote(noteEntity);
+        });
+        btnDeadline.setOnClickListener(v -> {
+            // todo Сделать изменение даты через DatePicker
         });
 
+    }
+
+    private void fillNote() {
+        noteEntity.setName(editName.getText().toString());
+        noteEntity.setDescription(editDescription.getText().toString());
+        noteEntity.setCreateDate(new Date());
+    }
+
+    private void initializeFields(NoteEntity note) {
+        if (note == null) return;
+
+        editName.setText(note.getName());
+        editDescription.setText(note.getDescription());
+        textCreate.setText(String.format("Created: %s",
+                simpleDateFormat.format(note.getCreateDate())));
+        textDeadline.setText(
+                (note.getDeadline() != null)
+                        ? getDeadlineString(note.getDeadline())
+                        : "Дедлайн не указан"
+        );
     }
 
     private String getDeadlineString(Date date) {
@@ -95,6 +116,10 @@ public class NotebookFragment extends Fragment {
 
     public interface Controller {
         void updateNote(NoteEntity noteEntity);
+    }
+
+    private Controller getController() {
+        return (Controller) getActivity();
     }
 
 }
