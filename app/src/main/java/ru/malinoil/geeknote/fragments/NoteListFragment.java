@@ -24,10 +24,20 @@ import ru.malinoil.geeknote.models.NoteEntity;
 
 public class NoteListFragment extends Fragment {
 
+    /*todo
+        1. - Сделать контекстное меню для изменения и удаления заметок
+        2. - Добавить логику удаления заметки из списка и recyclerview
+        3. - Вывести DatePicker с помощью диалогового окна
+        * проверить, чтобы повторяющиеся элементы были вынесены в стили
+        ** все строки в коде должны браться из ресурс файла
+     */
+
     private List<NoteEntity> listNotes = new ArrayList<>();
     private RecyclerView recyclerListNotes;
     private NoteListAdapter listAdapter;
     private Button createBtn;
+
+    private boolean isLand;
 
     @Nullable
     @Override
@@ -35,6 +45,8 @@ public class NoteListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_list_notes, null);
         recyclerListNotes = (RecyclerView) view.findViewById(R.id.recycler_list_notes);
         createBtn = (Button) view.findViewById(R.id.button_add_note);
+
+        isLand = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
 
         return view;
     }
@@ -44,12 +56,24 @@ public class NoteListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         listAdapter = new NoteListAdapter();
-        listAdapter.setOnItemClickListener(getController()::openNote);
+        listAdapter.setOnItemClickListener(new NoteListAdapter.OnMenuItemClickListener() {
+            @Override
+            public void onEditClick(NoteEntity note) {
+                getController().openNote(note);
+            }
+
+            @Override
+            public void onDeleteClick(NoteEntity note) {
+                int position = getPositionFromListNotes(note);
+                listNotes.remove(position);
+                listAdapter.notifyDataSetChanged();
+            }
+        });
         recyclerListNotes.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerListNotes.setAdapter(listAdapter);
         listAdapter.setListNotes(listNotes);
 
-        if (getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
+        if (!isLand) {
             createBtn.setClickable(false);
             createBtn.setVisibility(View.GONE);
         }
@@ -65,14 +89,14 @@ public class NoteListFragment extends Fragment {
     }
 
     public void addNoteOnList(NoteEntity note) {
-        for (NoteEntity listNote : listNotes) {
-            if (listNote.getId().equals(note.getId())) {
-                return;
-            }
+        int position = getPositionFromListNotes(note);
+        if (!isLand && position != -1) {
+            return;
+        } else if (position == -1) {
+            listNotes.add(note);
+            position = listNotes.size() - 1;
         }
-        listNotes.add(note);
-        listAdapter.setListNotes(listNotes);
-        listAdapter.notifyDataSetChanged();
+        listAdapter.notifyItemChanged(position);
     }
 
     private Controller getController() {
@@ -83,5 +107,14 @@ public class NoteListFragment extends Fragment {
         void openNote(NoteEntity noteEntity);
 
         void createNote();
+    }
+
+    private int getPositionFromListNotes(NoteEntity note) {
+        for (int i = 0; i < listNotes.size(); i++) {
+            if (listNotes.get(i).getId().equals(note.getId())) {
+                return i;
+            }
+        }
+        return -1;
     }
 }

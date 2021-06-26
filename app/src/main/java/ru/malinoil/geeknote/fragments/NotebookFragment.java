@@ -1,6 +1,8 @@
 package ru.malinoil.geeknote.fragments;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,15 +17,16 @@ import androidx.fragment.app.Fragment;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import ru.malinoil.geeknote.R;
 import ru.malinoil.geeknote.models.NoteEntity;
 
 public class NotebookFragment extends Fragment {
     private static final String NOTEBOOK_KEY = "notebook";
+    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
     private NoteEntity noteEntity;
-    private SimpleDateFormat simpleDateFormat;
 
     private EditText editName;
     private EditText editDescription;
@@ -76,7 +79,7 @@ public class NotebookFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
+
         initializeFields(noteEntity);
         if (noteEntity == null) noteEntity = new NoteEntity("", "");
 
@@ -85,7 +88,17 @@ public class NotebookFragment extends Fragment {
             getController().updateNote(noteEntity);
         });
         btnDeadline.setOnClickListener(v -> {
-            // todo Сделать изменение даты через DatePicker
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                DatePickerDialog dialog = new DatePickerDialog(getContext());
+                dialog.setOnDateSetListener((view1, year, month, dayOfMonth) -> {
+                    GregorianCalendar calendar = new GregorianCalendar(year, month, dayOfMonth);
+                    noteEntity.setDeadline(calendar.getTime());
+                    textDeadline.setText(getDeadlineString(noteEntity.getDeadline()));
+                });
+                dialog.show();
+            } else {
+                //todo Доделать после урока по диалогам
+            }
         });
 
     }
@@ -101,17 +114,20 @@ public class NotebookFragment extends Fragment {
 
         editName.setText(note.getName());
         editDescription.setText(note.getDescription());
-        textCreate.setText(String.format("Created: %s",
+        textCreate.setText(String.format("%s %s",
+                getResources().getString(R.string.tag_created),
                 simpleDateFormat.format(note.getCreateDate())));
         textDeadline.setText(
                 (note.getDeadline() != null)
                         ? getDeadlineString(note.getDeadline())
-                        : "Дедлайн не указан"
+                        : getResources().getString(R.string.deadline_undefined)
         );
     }
 
     private String getDeadlineString(Date date) {
-        return String.format("Deadline to %s", simpleDateFormat.format(date));
+        return String.format("%s %s",
+                getResources().getString(R.string.tag_deadline),
+                simpleDateFormat.format(date));
     }
 
     public interface Controller {
