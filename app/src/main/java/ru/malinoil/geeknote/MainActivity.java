@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
             transaction.addToBackStack(null)
                     .replace(R.id.single_fragment_container, NotebookFragment.newInstance(noteEntity));
         } else {
-            transaction.add(R.id.details_container, NotebookFragment.newInstance(noteEntity));
+            transaction.replace(R.id.details_container, NotebookFragment.newInstance(noteEntity));
         }
         transaction.commit();
     }
