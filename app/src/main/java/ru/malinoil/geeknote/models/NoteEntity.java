@@ -3,7 +3,7 @@ package ru.malinoil.geeknote.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.Date;
+import java.util.Calendar;
 import java.util.UUID;
 
 public class NoteEntity implements Parcelable {
@@ -11,20 +11,40 @@ public class NoteEntity implements Parcelable {
     private String id;
     private String name;
     private String description;
-    private Date createDate;
-    private Date deadline = null;
+    private long createDate;
+    private long deadline = 0;
+
+    public NoteEntity() {
+
+    }
 
     public NoteEntity(String name, String description) {
         this.id = UUID.randomUUID().toString();
         this.name = name;
         this.description = description;
-        this.createDate = new Date();
+        this.createDate = Calendar.getInstance().getTimeInMillis();
     }
 
     protected NoteEntity(Parcel in) {
         id = in.readString();
         name = in.readString();
         description = in.readString();
+        createDate = in.readLong();
+        deadline = in.readLong();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeString(description);
+        dest.writeLong(createDate);
+        dest.writeLong(deadline);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<NoteEntity> CREATOR = new Creator<NoteEntity>() {
@@ -39,8 +59,8 @@ public class NoteEntity implements Parcelable {
         }
     };
 
-    public void setDeadline(Date deadline) {
-        this.deadline = deadline;
+    public long getCreateDate() {
+        return createDate;
     }
 
     public void setName(String name) {
@@ -59,11 +79,11 @@ public class NoteEntity implements Parcelable {
         return description;
     }
 
-    public Date getCreateDate() {
-        return createDate;
+    public void setCreateDate(long createDate) {
+        this.createDate = createDate;
     }
 
-    public Date getDeadline() {
+    public long getDeadline() {
         return deadline;
     }
 
@@ -71,19 +91,7 @@ public class NoteEntity implements Parcelable {
         this.description = description;
     }
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(name);
-        dest.writeString(description);
+    public void setDeadline(long deadline) {
+        this.deadline = deadline;
     }
 }
