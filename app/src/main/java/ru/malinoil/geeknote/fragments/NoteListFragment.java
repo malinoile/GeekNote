@@ -14,25 +14,16 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ru.malinoil.geeknote.NoteListAdapter;
 import ru.malinoil.geeknote.R;
 import ru.malinoil.geeknote.models.NoteEntity;
+import ru.malinoil.geeknote.models.NoteListImpl;
+import ru.malinoil.geeknote.models.NotesListRepo;
 
 
 public class NoteListFragment extends Fragment {
 
-    /*todo
-        1. - Сделать контекстное меню для изменения и удаления заметок
-        2. - Добавить логику удаления заметки из списка и recyclerview
-        3. - Вывести DatePicker с помощью диалогового окна
-        * проверить, чтобы повторяющиеся элементы были вынесены в стили
-        ** все строки в коде должны браться из ресурс файла
-     */
-
-    private List<NoteEntity> listNotes = new ArrayList<>();
+    private NotesListRepo noteRepo = new NoteListImpl();
     private RecyclerView recyclerListNotes;
     private NoteListAdapter listAdapter;
     private Button createBtn;
@@ -65,13 +56,13 @@ public class NoteListFragment extends Fragment {
             @Override
             public void onDeleteClick(NoteEntity note) {
                 int position = getPositionFromListNotes(note);
-                listNotes.remove(position);
+                noteRepo.deleteNote(noteRepo.getNotes().get(position));
                 listAdapter.notifyDataSetChanged();
             }
         });
         recyclerListNotes.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerListNotes.setAdapter(listAdapter);
-        listAdapter.setListNotes(listNotes);
+        listAdapter.setListNotes(noteRepo.getNotes());
 
         if (!isLand) {
             createBtn.setClickable(false);
@@ -90,11 +81,14 @@ public class NoteListFragment extends Fragment {
 
     public void addNoteOnList(NoteEntity note) {
         int position = getPositionFromListNotes(note);
-        if (!isLand && position != -1) {
-            return;
+        if (position != -1) {
+            noteRepo.updateNote(position, note);
+            if (!isLand) {
+                return;
+            }
         } else if (position == -1) {
-            listNotes.add(note);
-            position = listNotes.size() - 1;
+            noteRepo.saveNote(note);
+            position = noteRepo.getNotes().size() - 1;
         }
         listAdapter.notifyItemChanged(position);
     }
@@ -110,8 +104,8 @@ public class NoteListFragment extends Fragment {
     }
 
     private int getPositionFromListNotes(NoteEntity note) {
-        for (int i = 0; i < listNotes.size(); i++) {
-            if (listNotes.get(i).getId().equals(note.getId())) {
+        for (int i = 0; i < noteRepo.getNotes().size(); i++) {
+            if (noteRepo.getNotes().get(i).getId().equals(note.getId())) {
                 return i;
             }
         }

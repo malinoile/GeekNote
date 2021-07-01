@@ -16,7 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.GregorianCalendar;
 
 import ru.malinoil.geeknote.R;
@@ -92,7 +91,7 @@ public class NotebookFragment extends Fragment {
                 DatePickerDialog dialog = new DatePickerDialog(getContext());
                 dialog.setOnDateSetListener((view1, year, month, dayOfMonth) -> {
                     GregorianCalendar calendar = new GregorianCalendar(year, month, dayOfMonth);
-                    noteEntity.setDeadline(calendar.getTime());
+                    noteEntity.setDeadline(calendar.getTimeInMillis());
                     textDeadline.setText(getDeadlineString(noteEntity.getDeadline()));
                 });
                 dialog.show();
@@ -106,7 +105,6 @@ public class NotebookFragment extends Fragment {
     private void fillNote() {
         noteEntity.setName(editName.getText().toString());
         noteEntity.setDescription(editDescription.getText().toString());
-        noteEntity.setCreateDate(new Date());
     }
 
     private void initializeFields(NoteEntity note) {
@@ -118,13 +116,13 @@ public class NotebookFragment extends Fragment {
                 getResources().getString(R.string.tag_created),
                 simpleDateFormat.format(note.getCreateDate())));
         textDeadline.setText(
-                (note.getDeadline() != null)
+                (note.getDeadline() != 0)
                         ? getDeadlineString(note.getDeadline())
                         : getResources().getString(R.string.deadline_undefined)
         );
     }
 
-    private String getDeadlineString(Date date) {
+    private String getDeadlineString(long date) {
         return String.format("%s %s",
                 getResources().getString(R.string.tag_deadline),
                 simpleDateFormat.format(date));
