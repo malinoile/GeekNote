@@ -10,4 +10,6 @@
 
     <color name="orange">#F19000</color>
     <color name="orange_dark">#875000</color>
+    <color name="back_green">#6F8BC34A</color>
+    <color name="gray">#787878</color>
 </resources>

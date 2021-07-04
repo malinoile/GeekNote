@@ -4,22 +4,27 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class NoteEntity implements Parcelable {
 
+    private String id;
     private String name;
     private String description;
     private Date createDate;
     private Date deadline = null;
 
     public NoteEntity(String name, String description) {
+        this.id = UUID.randomUUID().toString();
         this.name = name;
         this.description = description;
         this.createDate = new Date();
     }
 
-    public void setDeadline(Date deadline) {
-        this.deadline = deadline;
+    protected NoteEntity(Parcel in) {
+        id = in.readString();
+        name = in.readString();
+        description = in.readString();
     }
 
     public static final Creator<NoteEntity> CREATOR = new Creator<NoteEntity>() {
@@ -34,9 +39,8 @@ public class NoteEntity implements Parcelable {
         }
     };
 
-    protected NoteEntity(Parcel in) {
-        name = in.readString();
-        description = in.readString();
+    public void setDeadline(Date deadline) {
+        this.deadline = deadline;
     }
 
     public void setName(String name) {
@@ -45,6 +49,10 @@ public class NoteEntity implements Parcelable {
 
     public String getName() {
         return name;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getDescription() {
@@ -74,6 +82,7 @@ public class NoteEntity implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
         dest.writeString(name);
         dest.writeString(description);
     }

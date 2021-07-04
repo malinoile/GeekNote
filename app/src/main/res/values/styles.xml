@@ -2,11 +2,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="view_on_parent">
-        <item name="android:layout_marginLeft">@dimen/default_dimen</item>
-        <item name="android:layout_marginRight">@dimen/default_dimen</item>
         <item name="android:layout_marginTop">@dimen/half_dimen</item>
         <item name="android:layout_marginBottom">@dimen/half_dimen</item>
-        <item name="android:layout_marginHorizontal" tools:targetApi="o">@dimen/default_dimen</item>
         <item name="android:layout_marginVertical" tools:targetApi="o">@dimen/half_dimen</item>
     </style>
 
@@ -23,7 +20,10 @@
     </style>
 
     <style name="full_width_button" parent="full_width_view">
-        <item name="android:layout_margin">@dimen/default_dimen</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:layout_marginTop">@dimen/half_dimen</item>
+        <item name="android:layout_marginBottom">@dimen/half_dimen</item>
+        <item name="android:layout_marginVertical" tools:targetApi="o">@dimen/half_dimen</item>
         <item name="android:textSize">@dimen/button_text_size</item>
         <item name="android:textStyle">bold</item>
         <item name="backgroundTint">@color/orange</item>
