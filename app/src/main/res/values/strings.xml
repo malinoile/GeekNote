@@ -11,4 +11,10 @@
     <string name="new_note">Новая заметка</string>
     <string name="menu_create">Создать заметку</string>
     <string name="menu_list">Список заметок</string>
+    <string name="edit">Изменить</string>
+    <string name="delete">Удалить</string>
+
+    <string name="tag_created">Создана:</string>
+    <string name="deadline_undefined">Дедлайн не указан</string>
+    <string name="tag_deadline">Дедлайн до</string>
 </resources>

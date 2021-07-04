@@ -12,20 +12,20 @@ import ru.malinoil.geeknote.models.NoteEntity;
 
 public class NoteListAdapter extends RecyclerView.Adapter<NoteHolder> {
     private List<NoteEntity> listNotes = new ArrayList<>();
-    private OnItemClickListener onItemClickListener;
+    private OnMenuItemClickListener onMenuItemClickListener;
 
     public void setListNotes(List<NoteEntity> list) {
         listNotes = list;
     }
 
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        this.onItemClickListener = onItemClickListener;
+    public void setOnItemClickListener(OnMenuItemClickListener onMenuItemClickListener) {
+        this.onMenuItemClickListener = onMenuItemClickListener;
     }
 
     @NonNull
     @Override
     public NoteHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new NoteHolder(parent, onItemClickListener);
+        return new NoteHolder(parent, onMenuItemClickListener);
     }
 
     @Override
@@ -38,7 +38,9 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteHolder> {
         return listNotes.size();
     }
 
-    public interface OnItemClickListener {
-        void onItemClick(NoteEntity note);
+    public interface OnMenuItemClickListener {
+        void onEditClick(NoteEntity note);
+
+        void onDeleteClick(NoteEntity note);
     }
 }

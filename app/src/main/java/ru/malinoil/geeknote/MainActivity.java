@@ -17,6 +17,8 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
         NotebookFragment.Controller {
 
     public static final String NOTE_LIST_FRAGMENT_TAG = "NOTE_TAG";
+
+    private BottomNavigationView navigationView;
     private boolean isLand = false;
 
     @Override
@@ -61,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
             transaction.addToBackStack(null)
                     .replace(R.id.single_fragment_container, NotebookFragment.newInstance(noteEntity));
         } else {
-            transaction.add(R.id.details_container, NotebookFragment.newInstance(noteEntity));
+            transaction.replace(R.id.details_container, NotebookFragment.newInstance(noteEntity));
         }
         transaction.commit();
     }
@@ -72,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     }
 
     private void renderBottomNavigation() {
-        BottomNavigationView navigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        navigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         navigationView.setOnNavigationItemSelectedListener(item -> {
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             switch (item.getItemId()) {
