@@ -1,13 +1,13 @@
 package ru.malinoil.geeknote.fragments;
 
-import android.app.DatePickerDialog;
+import android.app.AlertDialog;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -87,17 +87,22 @@ public class NotebookFragment extends Fragment {
             getController().updateNote(noteEntity);
         });
         btnDeadline.setOnClickListener(v -> {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                DatePickerDialog dialog = new DatePickerDialog(getContext());
-                dialog.setOnDateSetListener((view1, year, month, dayOfMonth) -> {
-                    GregorianCalendar calendar = new GregorianCalendar(year, month, dayOfMonth);
-                    noteEntity.setDeadline(calendar.getTimeInMillis());
-                    textDeadline.setText(getDeadlineString(noteEntity.getDeadline()));
-                });
-                dialog.show();
-            } else {
-                //todo Доделать после урока по диалогам
-            }
+            View datePickerView = LayoutInflater.from(getContext()).inflate(R.layout.datepicker_layout, null);
+            new AlertDialog.Builder(getContext())
+                    .setView(datePickerView)
+                    .setPositiveButton(R.string.button_ok, (dialog, which) -> {
+                        DatePicker datePicker = datePickerView.findViewById(R.id.date_picker);
+                        GregorianCalendar calendar = new GregorianCalendar(
+                                datePicker.getYear(),
+                                datePicker.getMonth(),
+                                datePicker.getDayOfMonth());
+                        noteEntity.setDeadline(calendar.getTimeInMillis());
+                        textDeadline.setText(getDeadlineString(noteEntity.getDeadline()));
+                    })
+                    .setNegativeButton(R.string.button_cancel, (dialog, which) -> {
+                        dialog.cancel();
+                    })
+                    .show();
         });
 
     }

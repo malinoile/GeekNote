@@ -17,4 +17,11 @@
     <string name="tag_created">Создана:</string>
     <string name="deadline_undefined">Дедлайн не указан</string>
     <string name="tag_deadline">Дедлайн до</string>
+    <string name="delete_dialog_title">Удаление записи</string>
+    <string name="dialog_message_format">Вы действительно хотите удалить заметку \"%s\"?</string>
+    <string name="positive_button">Да</string>
+    <string name="negative_button">Нет</string>
+    <string name="cancel_delete">Удаление отменено</string>
+    <string name="button_ok">ОК</string>
+    <string name="button_cancel">ОТМЕНА</string>
 </resources>

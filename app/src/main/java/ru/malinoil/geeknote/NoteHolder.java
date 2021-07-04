@@ -1,10 +1,12 @@
 package ru.malinoil.geeknote;
 
+import android.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -58,7 +60,20 @@ public class NoteHolder extends RecyclerView.ViewHolder {
                 clickListener.onEditClick(note);
                 break;
             case R.id.delete_note:
-                clickListener.onDeleteClick(note);
+                new AlertDialog.Builder(itemView.getContext())
+                        .setTitle(R.string.delete_dialog_title)
+                        .setIcon(R.drawable.ic_delete_note)
+                        .setMessage(String.format(itemView.getContext().getResources().getString(R.string.dialog_message_format), note.getName()))
+                        .setPositiveButton(R.string.positive_button, (dialog, which) -> {
+                            clickListener.onDeleteClick(note);
+                        })
+                        .setNegativeButton(R.string.negative_button, (dialog, which) -> {
+                            Toast.makeText(
+                                    itemView.getContext(),
+                                    itemView.getContext().getResources().getString(R.string.cancel_delete),
+                                    Toast.LENGTH_SHORT).show();
+                        })
+                        .show();
                 break;
         }
     }
