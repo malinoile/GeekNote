@@ -21,7 +21,6 @@ class NoteListPresenter(private val repository: NotesRepository) : NoteListContr
     }
 
     override fun deleteNote(note: NoteEntity) {
-        Log.d("@@@", view.toString())
         repository.deleteNote(note)
         view?.renderToast("Delete note \"${note.name}\"")
     }

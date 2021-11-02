@@ -4,12 +4,6 @@
     <style name="view_on_parent">
         <item name="android:layout_marginTop">@dimen/half_dimen</item>
         <item name="android:layout_marginBottom">@dimen/half_dimen</item>
-        <item name="android:layout_marginVertical" tools:targetApi="o">@dimen/half_dimen</item>
-    </style>
-
-    <style name="full_width_view" parent="view_on_parent">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
     </style>
 
     <style name="button">
@@ -19,7 +13,9 @@
         <item name="backgroundTint">@color/orange</item>
     </style>
 
-    <style name="full_width_button" parent="full_width_view">
+    <style name="full_width_button" parent="view_on_parent">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:singleLine">true</item>
         <item name="android:layout_marginTop">@dimen/half_dimen</item>
         <item name="android:layout_marginBottom">@dimen/half_dimen</item>

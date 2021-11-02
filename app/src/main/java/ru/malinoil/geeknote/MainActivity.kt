@@ -2,7 +2,7 @@ package ru.malinoil.geeknote
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import ru.malinoil.geeknote.databinding.ActivityMainBinding
@@ -18,29 +18,34 @@ class MainActivity : AppCompatActivity(), NoteController, FragmentController {
         resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     }
 
+    companion object {
+        const val NOTE_LIST_FRAGMENT_TAG = "NOTE_LIST_TAG"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
         setFragment(NoteListFragment(), NOTE_LIST_FRAGMENT_TAG)
-        if (!isLand) {
-            renderBottomNavigation()
+        binding.addFab.setOnClickListener {
+            openNote(null)
         }
     }
 
-    override fun openNote(noteEntity: NoteEntity?) {
+    override fun openNote(note: NoteEntity?) {
+        binding.addFab.visibility = View.INVISIBLE
         if(!isLand) {
-            setFragment(NoteFragment.newInstance(noteEntity), null, isBackStack = true)
+            setFragment(NoteFragment.newInstance(note), null, isBackStack = true)
         } else {
             setFragment(
-                NoteFragment.newInstance(noteEntity),
-                null,
-                binding.detailsContainer!!.id
+                NoteFragment.newInstance(note),
+                null, binding.detailsContainer!!.id
             )
         }
     }
 
     override fun closeNote(note: NoteEntity?) {
+        binding.addFab.visibility = View.VISIBLE
         with(supportFragmentManager) {
             if(!isLand) { popBackStack() }
             else {
@@ -55,25 +60,9 @@ class MainActivity : AppCompatActivity(), NoteController, FragmentController {
         }
     }
 
-    private fun renderBottomNavigation() {
-        binding.bottomNavigation?.setOnNavigationItemSelectedListener { item: MenuItem ->
-            when (item.itemId) {
-                R.id.nav_list -> {
-                    setFragment(
-                        searchFragmentByTag(NOTE_LIST_FRAGMENT_TAG) ?: NoteListFragment(),
-                        NOTE_LIST_FRAGMENT_TAG
-                    )
-                }
-                R.id.nav_add_note -> {
-                    setFragment(
-                        NoteFragment.newInstance(null),
-                        null,
-                        isBackStack = true
-                    )
-                }
-            }
-            return@setOnNavigationItemSelectedListener true
-        }
+    override fun onBackPressed() {
+        super.onBackPressed()
+        binding.addFab.visibility = View.VISIBLE
     }
 
     override fun setFragment(
@@ -92,9 +81,5 @@ class MainActivity : AppCompatActivity(), NoteController, FragmentController {
 
     override fun searchFragmentByTag(tag: String?): Fragment? {
         return supportFragmentManager.findFragmentByTag(tag)
-    }
-
-    companion object {
-        const val NOTE_LIST_FRAGMENT_TAG = "NOTE_TAG"
     }
 }

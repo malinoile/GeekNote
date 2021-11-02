@@ -10,32 +10,57 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/default_dimen">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edit_name"
-            style="@style/full_width_view"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/name_text_input_layout"
             android:hint="@string/name_hint"
-            app:layout_constraintBottom_toTopOf="@id/edit_description"
+
+            app:layout_constraintBottom_toTopOf="@id/desc_text_input_layout"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" >
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edit_description"
-            style="@style/full_width_view"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/desc_text_input_layout"
             android:hint="@string/description_hint"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
             app:layout_constraintBottom_toTopOf="@+id/linear_date"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edit_name" />
+            app:layout_constraintTop_toBottomOf="@+id/name_text_input_layout">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top|start"
+                android:lines="3"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
             android:id="@+id/linear_date"
-            style="@style/full_width_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintBottom_toTopOf="@id/button_save"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/edit_description">
+            app:layout_constraintTop_toBottomOf="@id/desc_text_input_layout">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/text_deadline"

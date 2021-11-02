@@ -53,14 +53,6 @@ class NoteListFragment : Fragment(), NoteListContract.View {
 
         presenter.getNoteList()
 
-        if (!isLand) {
-            binding.buttonAddNote.apply {
-                isClickable = false
-                visibility = View.GONE
-                setOnClickListener { (activity as NoteController).openNote(null) }
-            }
-        }
-
         val touchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
             0,
             ItemTouchHelper.RIGHT

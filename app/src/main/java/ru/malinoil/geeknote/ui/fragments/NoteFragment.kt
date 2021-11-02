@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import ru.malinoil.geeknote.MyApplication
 import ru.malinoil.geeknote.R
 import ru.malinoil.geeknote.databinding.FragmentNoteBinding
+import ru.malinoil.geeknote.models.DateUtils
 import ru.malinoil.geeknote.models.contracts.NoteContract
 import ru.malinoil.geeknote.models.controllers.NoteController
 import ru.malinoil.geeknote.models.entities.NoteEntity
@@ -81,19 +82,20 @@ class NoteFragment : Fragment(), NoteContract.View {
     }
 
     private fun initializeFields() {
+
         noteEntity?.let {
             fillNoteFields(it)
-        }
+            setButtonText(R.string.save_text)
+        } ?: setButtonText(R.string.create_text)
     }
 
     private fun fillNoteFields(note: NoteEntity) {
         with(binding) {
             editName.setText(note.name)
             editDescription.setText(note.description)
-            textDateCreate.text = note.createDate.toString()
-            buttonSave.text = requireContext().getString(
-                noteEntity?.let { R.string.save_text } ?: R.string.create_text
-            )
+            note.createDate?.let {
+                textDateCreate.text = DateUtils.getStringDate(it)
+            }
         }
     }
 
@@ -113,5 +115,9 @@ class NoteFragment : Fragment(), NoteContract.View {
 
     private fun getController(): NoteController {
         return activity as NoteController
+    }
+
+    private fun setButtonText(resId: Int) {
+        binding.buttonSave.text = requireContext().getString(resId)
     }
 }

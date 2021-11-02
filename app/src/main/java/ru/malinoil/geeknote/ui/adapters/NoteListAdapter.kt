@@ -1,11 +1,14 @@
 package ru.malinoil.geeknote.ui.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ru.malinoil.geeknote.R
 import ru.malinoil.geeknote.databinding.ItemOnListBinding
+import ru.malinoil.geeknote.models.DateUtils
 import ru.malinoil.geeknote.models.entities.NoteEntity
+import java.util.*
 
 class NoteListAdapter(private val onClickNote: (NoteEntity) -> Unit) :
     RecyclerView.Adapter<NoteListAdapter.NoteHolder?>() {
@@ -33,12 +36,12 @@ class NoteListAdapter(private val onClickNote: (NoteEntity) -> Unit) :
 
     fun saveNote(note: NoteEntity) {
         val indexNote = listNotes.indexOf(note)
-        if(indexNote >= 0) {
+        if (indexNote >= 0) {
             listNotes[indexNote] = note
             notifyItemChanged(indexNote)
         } else {
             listNotes.add(note)
-            notifyItemChanged(listNotes.size-1)
+            notifyItemChanged(listNotes.size - 1)
         }
     }
 
@@ -53,10 +56,12 @@ class NoteListAdapter(private val onClickNote: (NoteEntity) -> Unit) :
 
         fun bind(note: NoteEntity) {
             this.note = note
+            note.createDate?.let {
+                binding.listCreateNote.text = DateUtils.getStringDate(it)
+            }
             with(binding) {
                 listTitleNote.text = note.name
                 listDescNote.text = note.description
-                listCreateNote.text = note.createDate.toString()
             }
         }
 
